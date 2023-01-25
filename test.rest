@@ -1,4 +1,4 @@
-@url = http://localhost:5001
+@url = http://localhost:3100
 
 ### GET INFO
 GET {{url}}
@@ -50,8 +50,8 @@ content-type: application/json
 POST {{url}}/login
 content-type: application/json
 
-{
-	"password": "123"
+{ "username": "marina", 
+	"password": "mm000"
 }
 
 ### GET CURRENT USER

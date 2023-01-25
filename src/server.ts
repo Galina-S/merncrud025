@@ -5,6 +5,7 @@ import * as config from './config.js';
 import { INewBook } from './interfaces.js';
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
+import * as tools from './tools.js';
 
 declare module 'express-session' {
 	export interface SessionData {
@@ -50,13 +51,19 @@ app.get('/book/:id', async (req, res) => {
 	res.status(200).json(book);
 });
 
-app.post('/login', (req: express.Request, res: express.Response) => {
-	const { password } = req.body;
-	if (password === config.ADMIN_PASSWORD) {
-		req.session.user = 'admin' as any;
-		req.session.cookie.expires = new Date(Date.now() + config.SECONDS_TILL_SESSION_TIMEOUT * 1000);
-		req.session.save();
-		res.status(200).send('ok');
+app.post('/login', async (req: express.Request, res: express.Response) => {
+	const { username, password } = req.body;
+	const user = await model.getUser(username, password);
+	if (user !== null) {
+		const isCorrect = await tools.passwordIsCorrect(password, user.hash);
+		if (isCorrect) {
+			req.session.user = user as any;
+			req.session.cookie.expires = new Date(Date.now() + config.SECONDS_TILL_SESSION_TIMEOUT * 1000);
+			req.session.save();
+			res.status(200).send('ok');
+		} else {
+			res.status(401).send({});
+		}
 	} else {
 		res.status(401).send({});
 	}

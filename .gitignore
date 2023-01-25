@@ -1,4 +1,4 @@
-*.env
-node_modules
-.vscode
-dist
+    node_modules
+    .vscode
+    dist
+    .env

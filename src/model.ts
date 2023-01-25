@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import { Book } from './models/Book.js';
 import * as config from './config.js';
 import { IBook, INewBook } from './interfaces.js';
+import { User } from './models/Users.js';
 
 mongoose.set('strictQuery', false);
 mongoose.connect(config.MONGODB_CONNECTION);
@@ -28,6 +29,14 @@ export const getBook = async (_id: string) => {
 	const book = decorateAndSanitizeBook(rawBook);
 	return book;
 }
+
+
+export const getUser = async (username: string, password: string) => {
+	const user = await User.findOne({ username });
+	return user;
+}
+
+
 
 export const addBook = async (book: INewBook) => {
 	return new Promise(async (resolve, reject) => {
@@ -93,3 +102,4 @@ export const getApiInstructions = () => {
 </ul>
 	`;
 }
+
